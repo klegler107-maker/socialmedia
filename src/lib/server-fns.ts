@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import OpenAI from "openai";
 import { getSessionData, setSessionData } from "./store";
+import { getUserId } from "./auth";
 
 // Initialize OpenAI client (only on the server side)
 function getOpenAI(): OpenAI {
@@ -8,6 +9,7 @@ function getOpenAI(): OpenAI {
 }
 
 // CSV upload server function — accepts CSV text + filename
+// Now requires Clerk authentication — ties session data to the user's ID.
 export const uploadCSV = createServerFn({ method: "POST" })
   .validator((data: { csvText: string; fileName: string }) => {
     if (!data.csvText || !data.fileName) {
@@ -16,6 +18,11 @@ export const uploadCSV = createServerFn({ method: "POST" })
     return data;
   })
   .handler(async ({ data }) => {
+    const userId = await getUserId();
+    if (!userId) {
+      return { error: "Please sign in to upload a CSV." };
+    }
+
     const { csvText, fileName } = data;
 
     if (!fileName.endsWith(".csv")) {
@@ -45,6 +52,7 @@ export const uploadCSV = createServerFn({ method: "POST" })
     const sessionId = Math.random().toString(36).substring(2, 15);
 
     setSessionData(sessionId, {
+      userId,
       csvData: rows,
       columns,
       fileName,
@@ -61,6 +69,7 @@ export const uploadCSV = createServerFn({ method: "POST" })
   });
 
 // Chat server function
+// Validates that the session belongs to the authenticated user.
 export const sendChat = createServerFn({ method: "POST" })
   .validator(
     (data: { message: string; sessionId: string }) => {
@@ -73,10 +82,20 @@ export const sendChat = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { message, sessionId } = data;
 
+    const userId = await getUserId();
+    if (!userId) {
+      return { error: "Please sign in to use the chat." };
+    }
+
     const sessionData = getSessionData(sessionId);
 
     if (!sessionData) {
       return { error: "Session expired. Please upload your CSV again." };
+    }
+
+    // Ensure the session belongs to this user
+    if (sessionData.userId !== userId) {
+      return { error: "Session does not belong to your account." };
     }
 
     try {

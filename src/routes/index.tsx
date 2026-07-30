@@ -54,7 +54,7 @@ function HomePage() {
             href="/upload"
             className="inline-flex items-center justify-center rounded-xl bg-brand-600 px-8 py-3.5 text-base font-semibold text-white shadow-sm hover:bg-brand-700 transition-colors"
           >
-            Upload your first CSV — it's free
+            Get started free
           </a>
           <a
             href="#how-it-works"
@@ -65,7 +65,7 @@ function HomePage() {
         </div>
 
         <p className="mt-4 text-sm text-gray-400">
-          No sign-up. No credit card. Just upload and start asking questions.
+          Free to try. No credit card required.
         </p>
       </section>
 
@@ -208,14 +208,13 @@ function HomePage() {
           Ready to stop guessing and start knowing?
         </h2>
         <p className="text-brand-100 text-lg mb-8 max-w-md mx-auto">
-          Upload a CSV and ask your first question in under 60 seconds. No sign-up
-          required.
+          Create a free account and ask your first question in under 60 seconds.
         </p>
         <a
-          href="/upload"
+          href="/sign-up"
           className="inline-flex items-center justify-center rounded-xl bg-white px-8 py-3.5 text-base font-semibold text-brand-700 hover:bg-brand-50 transition-colors shadow-sm"
         >
-          Upload your first CSV
+          Create free account
         </a>
       </section>
 

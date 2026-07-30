@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { sendChat } from "~/lib/server-fns";
+import { CLERK_ENABLED } from "~/lib/auth-client";
 
 interface Message {
   role: "user" | "assistant";

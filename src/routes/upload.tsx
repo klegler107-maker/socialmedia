@@ -1,6 +1,7 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState, useRef, useCallback } from "react";
 import { uploadCSV } from "~/lib/server-fns";
+import { CLERK_ENABLED } from "~/lib/auth-client";
 
 export const Route = createFileRoute("/upload")({
   component: UploadPage,
@@ -91,6 +92,14 @@ function UploadPage() {
 
   return (
     <div className="max-w-xl mx-auto px-4 py-16 sm:py-24">
+      {!CLERK_ENABLED && (
+        <div className="mb-6 p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-sm text-center">
+          Clerk is not configured yet. Uploads work but are not tied to user
+          accounts. Set VITE_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY in .env
+          to enable authentication.
+        </div>
+      )}
+
       <div className="text-center mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
           Upload your CSV
